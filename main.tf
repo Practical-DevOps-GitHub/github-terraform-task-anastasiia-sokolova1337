@@ -41,8 +41,10 @@ resource "github_branch_protection" "main" {
   pattern       = "main"
   repository_id = var.repository_name
   required_pull_request_reviews {
-    require_code_owner_reviews = true
+    require_code_owner_reviews      = true
+    required_approving_review_count = 0
   }
+
 }
 
 resource "github_branch_protection" "develop" {
@@ -79,7 +81,7 @@ resource "github_repository_file" "pull_request_template" {
   file                = ".github/pull_request_template.md"
   repository          = var.repository_name
   overwrite_on_create = true
-  branch = "main"
+  branch              = "main"
 }
 
 resource "github_repository_file" "codeowners_main" {
@@ -101,7 +103,7 @@ resource "github_repository_webhook" "discord_server" {
 }
 
 resource "github_actions_secret" "pat" {
-  repository  = var.repository_name
-  secret_name = "PAT"
+  repository      = var.repository_name
+  secret_name     = "PAT"
   plaintext_value = var.action_token
 }
