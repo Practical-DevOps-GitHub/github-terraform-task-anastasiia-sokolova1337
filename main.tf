@@ -8,6 +8,11 @@ variable "token" {
   sensitive = true
 }
 
+variable "action_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "repository_name" {
   description = "(Required) The name of the repository."
   type        = string
@@ -84,4 +89,18 @@ resource "github_repository_file" "codeowners_main" {
   repository          = var.repository_name
   branch              = "main"
   overwrite_on_create = true
+}
+
+resource "github_repository_webhook" "discord_server" {
+  events     = ["pull_request"]
+  repository = var.repository_name
+  configuration {
+    url = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_"
+  }
+}
+
+resource "github_actions_secret" "pat" {
+  repository  = var.repository_name
+  secret_name = "PAT"
+  plaintext_value = var.action_token
 }
