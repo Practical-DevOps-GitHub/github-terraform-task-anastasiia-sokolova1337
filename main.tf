@@ -59,4 +59,29 @@ resource "github_repository_deploy_key" "deploy_key" {
   title      = "DEPLOY_KEY"
 }
 
+resource "github_repository_file" "pull_request_template" {
+  content             = <<EOT
+  ## Describe your changes
 
+  ## Issue ticket number and link
+
+  ## Checklist before requesting a review
+  - [ ] I have performed a self-review of my code
+  - [ ] If it is a core feature, I have added thorough tests
+  - [ ] Do we need to implement analytics?
+  - [ ] Will this be part of a product update? If yes, please write one phrase about this update
+  EOT
+  file                = ".github/pull_request_template.md"
+  repository          = var.repository_name
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "codeowners_main" {
+  content             = <<EOT
+  * @softservedata
+  EOT
+  file                = "CODEOWNERS"
+  repository          = var.repository_name
+  branch              = "main"
+  overwrite_on_create = true
+}
