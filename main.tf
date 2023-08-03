@@ -79,6 +79,7 @@ resource "github_repository_file" "pull_request_template" {
   file                = ".github/pull_request_template.md"
   repository          = var.repository_name
   overwrite_on_create = true
+  branch = "main"
 }
 
 resource "github_repository_file" "codeowners_main" {
