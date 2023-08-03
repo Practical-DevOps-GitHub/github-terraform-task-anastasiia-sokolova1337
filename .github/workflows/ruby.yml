@@ -10,6 +10,7 @@
 name: Ruby
 
 env:
+    SECRETS_TOKEN: ${{ secrets.PAT }}
     TF_VAR_action_token: ${{ secrets.PAT }}
     TF_VAR_token: ${{ secrets.PAT_TERRAFORM }}
 
