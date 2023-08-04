@@ -99,7 +99,7 @@ resource "github_repository_webhook" "discord_server" {
   repository = var.repository_name
   configuration {
     content_type = "form"
-    url = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_"
+    url = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_/general"
   }
 }
 
