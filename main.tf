@@ -95,10 +95,10 @@ resource "github_repository_file" "codeowners_main" {
 }
 
 resource "github_repository_webhook" "discord_server" {
-  events     = ["pull_request"]
+  events     = ["pull_request", "pull_request_review", "pull_request_review_comment", "pull_request_review_thread", "push"]
   repository = var.repository_name
   configuration {
-    content_type = "form"
+    content_type = "json"
     url = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_/github"
   }
 }
