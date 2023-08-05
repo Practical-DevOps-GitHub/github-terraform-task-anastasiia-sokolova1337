@@ -1,6 +1,6 @@
 provider "github" {
   token = var.token
-  owner = "Practical-DevOps-GitHub"
+  owner = var.organisation
 }
 
 variable "token" {
@@ -8,9 +8,9 @@ variable "token" {
   sensitive = true
 }
 
-variable "action_token" {
-  type      = string
-  sensitive = true
+variable "organisation" {
+  type    = string
+  default = "Practical-DevOps-GitHub"
 }
 
 variable "repository_name" {
@@ -19,9 +19,33 @@ variable "repository_name" {
   default     = "github-terraform-task-anastasiia-sokolova1337"
 }
 
+variable "collaborators" {
+  type = map(string)
+  default = {
+    "softservedata" = "admin"
+  }
+}
+
+variable "branches" {
+  type    = set(string)
+  default = ["main", "develop"]
+}
+
+variable "discord_webhook_events" {
+  type    = list(string)
+  default = ["pull_request", "pull_request_review", "pull_request_review_comment", "pull_request_review_thread", "push"]
+}
+
+variable "action_token" {
+  type      = string
+  sensitive = true
+}
+
 resource "github_repository_collaborator" "collaborator" {
-  username   = "softservedata"
-  permission = "admin"
+  for_each = var.collaborators
+
+  username   = each.key
+  permission = each.value
   repository = var.repository_name
 }
 
@@ -44,7 +68,6 @@ resource "github_branch_protection" "main" {
     require_code_owner_reviews      = true
     required_approving_review_count = 0
   }
-
 }
 
 resource "github_branch_protection" "develop" {
@@ -67,6 +90,7 @@ resource "github_repository_deploy_key" "deploy_key" {
 }
 
 resource "github_repository_file" "pull_request_template" {
+  for_each            = var.branches
   content             = <<EOT
   ## Describe your changes
 
@@ -81,7 +105,7 @@ resource "github_repository_file" "pull_request_template" {
   file                = ".github/pull_request_template.md"
   repository          = var.repository_name
   overwrite_on_create = true
-  branch              = "main"
+  branch              = each.key
 }
 
 resource "github_repository_file" "codeowners_main" {
@@ -95,11 +119,11 @@ resource "github_repository_file" "codeowners_main" {
 }
 
 resource "github_repository_webhook" "discord_server" {
-  events     = ["pull_request", "pull_request_review", "pull_request_review_comment", "pull_request_review_thread", "push"]
+  events     = var.discord_webhook_events
   repository = var.repository_name
   configuration {
     content_type = "json"
-    url = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_/github"
+    url          = "https://discord.com/api/webhooks/1136580082283069510/UYOZaNngZYIDZMg8djjnFwFnetmcsML3RtvpGW74DRFTDEQ86EcvDQxYbMtFrzb9PO1_/github"
   }
 }
 
